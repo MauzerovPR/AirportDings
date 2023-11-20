@@ -1,4 +1,6 @@
-import psycopg2;
+import psycopg2
+
+from connection import connect;
 
 queries = {
         "get_all_passengers": "SELECT * FROM passenger JOIN ticket USING(passenger_id) JOIN flight USING(flight_id) WHERE flight_id = {0}",
@@ -10,7 +12,7 @@ def get_cursor():
 
 
 if __name__ == "__main__":
-    cursor = get_cursor()
+    cursor = connect().cursor()
     ans = cursor.execute(queries["get_all_passengers"].format("1"))
     print(ans)
 
