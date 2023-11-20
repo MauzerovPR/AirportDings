@@ -5,28 +5,28 @@ USE AirLine;
 
 CREATE TABLE IF NOT EXISTS Airport
 (
-    airport_id bigint primary key auto_increment,
+    airport_id bigint primary key generated always as identity,
     name       varchar(255) not null,
     valid      bool         not null default false
 );
 
 CREATE TABLE IF NOT EXISTS Aircraft
 (
-    aircraft_id bigint primary key auto_increment,
+    aircraft_id bigint primary key generated always as identity,
     type        varchar(255),
     seats       int not null check ( seats > 0 )
 );
 
 CREATE TABLE IF NOT EXISTS Pilot
 (
-    pilot_id bigint primary key auto_increment,
+    pilot_id bigint primary key generated always as identity,
     name     varchar(255) not null,
     surname  varchar(255)
 );
 
 CREATE TABLE IF NOT EXISTS Flight
 (
-    flight_id       bigint primary key auto_increment,
+    flight_id       bigint primary key generated always as identity,
     origin          bigint    not null,
     destination     bigint    not null,
     next_flight     bigint    null     default null,
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS Flight
 
 CREATE TABLE IF NOT EXISTS Passenger
 (
-    passenger_id bigint primary key auto_increment,
+    passenger_id bigint primary key generated always as identity,
     name         varchar(255) not null,
     surname      varchar(255)
 );
