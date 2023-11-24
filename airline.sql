@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS flight
     pilot_id        bigint    not null,
     copilot_id      bigint    not null,
     departure_time  timestamp not null default current_timestamp,
-    approx_duration timestamp not null,
+    approx_duration interval not null,
     foreign key (origin) references Airport (airport_id),
     foreign key (destination) references Airport (airport_id),
     foreign key (next_flight) references Airport (airport_id),
