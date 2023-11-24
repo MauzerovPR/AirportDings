@@ -1,30 +1,30 @@
-DROP DATABASE IF EXISTS AirLine;
-CREATE DATABASE IF NOT EXISTS AirLine;
+DROP DATABASE IF EXISTS airline;
+CREATE DATABASE airline;
 
-USE AirLine;
+\c airline
 
-CREATE TABLE IF NOT EXISTS Airport
+CREATE TABLE IF NOT EXISTS airport
 (
     airport_id bigint primary key generated always as identity,
     name       varchar(255) not null,
     valid      bool         not null default false
 );
 
-CREATE TABLE IF NOT EXISTS Aircraft
+CREATE TABLE IF NOT EXISTS aircraft
 (
     aircraft_id bigint primary key generated always as identity,
     type        varchar(255),
     seats       int not null check ( seats > 0 )
 );
 
-CREATE TABLE IF NOT EXISTS Pilot
+CREATE TABLE IF NOT EXISTS pilot
 (
     pilot_id bigint primary key generated always as identity,
     name     varchar(255) not null,
     surname  varchar(255)
 );
 
-CREATE TABLE IF NOT EXISTS Flight
+CREATE TABLE IF NOT EXISTS flight
 (
     flight_id       bigint primary key generated always as identity,
     origin          bigint    not null,
@@ -45,14 +45,14 @@ CREATE TABLE IF NOT EXISTS Flight
     check ( copilot_id <> pilot_id )
 );
 
-CREATE TABLE IF NOT EXISTS Passenger
+CREATE TABLE IF NOT EXISTS passenger
 (
     passenger_id bigint primary key generated always as identity,
     name         varchar(255) not null,
     surname      varchar(255)
 );
 
-CREATE TABLE IF NOT EXISTS Ticket
+CREATE TABLE IF NOT EXISTS ticket
 (
     flight_id    bigint         not null,
     passenger_id bigint         not null,
