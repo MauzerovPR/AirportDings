@@ -1,20 +1,19 @@
-import psycopg2
+from os import listdir
+from os.path import isfile, join
+from pathlib import Path
 
 from connection import connect;
 
-queries = {
-        "get_all_passengers": "SELECT * FROM passenger JOIN ticket USING(passenger_id) JOIN flight USING(flight_id) WHERE flight_id = {0}",
-        "is_tickets_flight_departed": "SELECT  FROM ticket JOIN flight USING(flight_id) WHERE flight.departure_time > CURRENT_TIMESTAMP AND ticket_id = {0}",
-        }
-def get_cursor():
-    conn = psycopg2.connect("dbname=LINIE_CHLODNICZE user=postgres password=postgres")
-    return conn.cursor()
+
+PROCEDURES_DIR = Path.cwd() / "procedures"
 
 
 if __name__ == "__main__":
     cursor = connect().cursor()
-    ans = cursor.execute(queries["get_all_passengers"].format("1"))
-    print(ans)
+    for file_name in listdir(PROCEDURES_DIR):
+        with open(PROCEDURES_DIR / file_name) as f:
+            query = f.read()
+            cursor.execute(query)
 
 
 
