@@ -9,13 +9,17 @@ if __name__ == "__main__":
     cursor = conn.cursor()
     cursor.execute(
         "TRUNCATE aircraft, flight, passenger, airport, pilot, ticket CASCADE")
+    def dbQuery(query: str): 
+        query_to_print = query if len(query) < 400 else query[0:100] + " ... "
+        print(query_to_print)
+        cursor.execute(query)
     data = [
     ["passengers",
      lambda row, acc:
      acc.append("('{}', '{}')".format(row[0].replace(
          "'", "''"), row[1].replace("'", "''"))),
      lambda acc:
-     cursor.execute(
+     dbQuery(
          f"INSERT INTO passenger(name,surname) VALUES {','.join(acc)}")
      ],
     ["pilots",
@@ -23,14 +27,14 @@ if __name__ == "__main__":
      acc.append("('{}', '{}')".format(row[0].replace(
          "'", "''"), row[1].replace("'", "''"))),
      lambda acc:
-     cursor.execute(
+     dbQuery(
          f"INSERT INTO pilot(name,surname) VALUES {','.join(acc)}")
     ],
     ["airports",
      lambda row, acc:
      acc.append("('{}', true)".format(row[2].replace("'", "''"))),
      lambda acc:
-     cursor.execute(
+     dbQuery(
          f"INSERT INTO airport(name, valid) VALUES {','.join(acc)}")
      ],
     ["aircrafts",
@@ -38,7 +42,7 @@ if __name__ == "__main__":
      acc.append("('{}', '{}')".format(row[0].replace(
          "'", "''"), row[2].replace("'", "''"))),
      lambda acc:
-     cursor.execute(f"INSERT INTO aircraft(type,seats) VALUES {','.join(acc)}")
+     dbQuery(f"INSERT INTO aircraft(type,seats) VALUES {','.join(acc)}")
      ]
     ]
 
@@ -53,11 +57,11 @@ if __name__ == "__main__":
 
     conn.commit()
 
-    cursor.execute("SELECT airport_id FROM airport")
+    dbQuery("SELECT airport_id FROM airport")
     airport_ids= cursor.fetchall()
-    cursor.execute("SELECT aircraft_id FROM aircraft")
+    dbQuery("SELECT aircraft_id FROM aircraft")
     aircraft_ids= cursor.fetchall()
-    cursor.execute("SELECT pilot_id FROM pilot")
+    dbQuery("SELECT pilot_id FROM pilot")
     pilot_ids= cursor.fetchall()
 
     values= []
@@ -78,13 +82,13 @@ if __name__ == "__main__":
         values.append(
             f"({origin_id},{dest_id},NULL,{aircraft_id},{pilot_id},{copilot_id}, '{duration}')")
     print("executing insert... \nthis may take a while")
-    cursor.execute(
+    dbQuery(
         f"INSERT INTO flight(origin,destination,next_flight,aircraft_id,pilot_id,copilot_id,approx_duration) VALUES {','.join(values)}")
 
-    cursor.execute(
+    dbQuery(
         "SELECT passenger_id FROM passenger")
     passenger_ids= cursor.fetchall()
-    cursor.execute(
+    dbQuery(
         "SELECT flight_id FROM flight")
     flight_ids= cursor.fetchall()
 
@@ -104,5 +108,5 @@ if __name__ == "__main__":
 
     print("executing insert... \nthis may take a while")
     query= f"INSERT INTO ticket(passenger_id, flight_id,cost,seat) VALUES {','.join(values)}"
-    cursor.execute(query)
+    dbQuery(query)
     conn.commit()
