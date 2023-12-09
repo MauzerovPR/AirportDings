@@ -1,0 +1,25 @@
+digraph "public" {
+
+splines  = ortho;
+fontname = "Inconsolata";
+
+node [colorscheme = ylgnbu4];
+edge [colorscheme = dark28, dir = both];
+
+aircraft  [shape = record, label = "{ aircraft |  type : varchar(255)\l  seats : integer\l| aircraft_id : bigint\l }"];
+airport   [shape = record, label = "{ airport |  name : varchar(255)\l  valid : boolean\l| airport_id : bigint\l }"];
+flight    [shape = record, label = "{ flight |  origin : bigint\l  destination : bigint\l  next_flight : bigint\l  aircraft_id : bigint\l  pilot_id : bigint\l  copilot_id : bigint\l  departure_time : timestamp\l  approx_duration : interval\l| flight_id : bigint\l }"];
+passenger [shape = record, label = "{ passenger |  name : varchar(255)\l  surname : varchar(255)\l| passenger_id : bigint\l }"];
+pilot     [shape = record, label = "{ pilot |  name : varchar(255)\l  surname : varchar(255)\l| pilot_id : bigint\l }"];
+ticket    [shape = record, label = "{ ticket |  cost : numeric(20,2)\l  seat : varchar(4)\l| flight_id : bigint\l  passenger_id : bigint\l }"];
+
+aircraft  -> flight [color = "#16a085", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "1", label = "aircraft_id", headlabel = "n"];
+airport   -> flight [color = "#27ae60", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "1", label = "origin:airport_id", headlabel = "n"];
+airport   -> flight [color = "#27ae60", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "1", label = "destination:airport_id", headlabel = "n"];
+flight    -> flight [color = "#3498db", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "1", label = "next_flight:flight_id", headlabel = "n"];
+pilot     -> flight [color = "#8e44ad", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "1", label = "pilot_id", headlabel = "n"];
+pilot     -> flight [color = "#8e44ad", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "1", label = "copilot_id:pilot_id", headlabel = "n"];
+flight    -> ticket [color = "#f39c12", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "1", label = "flight_id", headlabel = "n"];
+passenger -> ticket [color = "#c0392b", style = solid , arrowtail = none    , arrowhead = normal  , taillabel = "1", label = "passenger_id", headlabel = "n"];
+
+}
