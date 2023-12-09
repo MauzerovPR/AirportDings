@@ -1,6 +1,7 @@
 CREATE OR REPLACE FUNCTION HowMuchEachFlightEarned()
 RETURNS TABLE (id BIGINT, earning DECIMAL(20, 2)) AS $$ BEGIN
-    RETURN QUERY SELECT ticket.flight_id as id, SUM(ticket.cost)
+    RETURN QUERY
+    SELECT ticket.flight_id as id, SUM(ticket.cost)
     FROM ticket
     GROUP BY ticket.flight_id
     ORDER BY ticket.flight_id;
