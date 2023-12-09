@@ -1,6 +1,7 @@
 DROP DATABASE IF EXISTS airline;
 CREATE DATABASE airline;
 
+\c airline
 
 CREATE TABLE IF NOT EXISTS airport
 (
