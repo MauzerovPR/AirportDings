@@ -30,8 +30,8 @@ VALUES (1, 2, 2, 1, 1, 2, INTERVAL '2 hours'),
        (1, 2, null, 2, 2, 3, INTERVAL '12 hours 20 minutes'),
        (4, 3, null, 2, 1, 3, INTERVAL '8 hours 44 minutes');
 
-INSERT INTO Ticket(flight_id, passenger_id, cost, seat)
-VALUES (1, 1, 10, 'abcd'),
-       (2, 1, 10, '235'),
-       (3, 1, 20, '5435'),
-       (6, 2, 200, '5acc');
+INSERT INTO Ticket(flight_id, passenger_id, cost, seat, class)
+VALUES (1, 1, 10, 'abcd', 1),
+       (2, 1, 10, '235', 1),
+       (3, 1, 20, '5435', 2),
+       (6, 2, 200, '5acc', 2);
