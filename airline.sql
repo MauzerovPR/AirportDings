@@ -1,7 +1,6 @@
 DROP DATABASE IF EXISTS airline;
 CREATE DATABASE airline;
 
-\c airline
 
 CREATE TABLE IF NOT EXISTS airport
 (
@@ -35,7 +34,7 @@ CREATE TABLE IF NOT EXISTS flight
     copilot_id      bigint    not null,
     departure_time  timestamp not null default current_timestamp,
     approx_duration interval  not null,
-	delay           interval  not null default '0 minutes',
+    delay           interval  not null default '0 minutes',
     foreign key (origin)      references Airport (airport_id),
     foreign key (destination) references Airport (airport_id),
     foreign key (next_flight) references Flight (flight_id),
@@ -59,8 +58,8 @@ CREATE TABLE IF NOT EXISTS ticket
     passenger_id  bigint         not null,
     cost          decimal(20, 2) not null default 0 check ( cost >= 0 ),
     seat          varchar(4)     not null,
-	class         int            not null,
-	purchase_date timestamp      not null default current_timestamp,
+    class         int            not null,
+    purchase_date timestamp      not null default current_timestamp,
     primary key (flight_id, passenger_id),
     foreign key (flight_id)    references Flight (flight_id),
     foreign key (passenger_id) references Passenger (passenger_id)
