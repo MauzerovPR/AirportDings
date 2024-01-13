@@ -1,25 +1,24 @@
-CREATE OR REPLACE FUNCTION FreeSeatsPerFlight()
-RETURNS TABLE (
-    id BIGINT,
-    seats INT,
-    free_seats INT,
-    taken_seats_percent DECIMAL(3, 3),
-    free_seats_percent DECIMAL(3, 3)
-) AS $$ BEGIN
+CREATE OR REPLACE FUNCTION WolneMiejscaKazdegoLotu()
+    RETURNS TABLE (
+        id                      BIGINT,
+        miejsca                 INT,
+        wolne_miejsca           INT,
+        procent_zajetych_miejsc DECIMAL(3, 3),
+        procent_wolnych_miejsc  DECIMAL(3, 3)
+    ) AS $$ BEGIN
     RETURN QUERY
-    SELECT
-        flight.flight_id,
-        aircraft.seats,
-        aircraft.seats - tickets,
-        tickets::decimal / aircraft.seats * 100,
-        (aircraft.seats - tickets)::decimal / aircraft.seats * 100
-    FROM flight
-    INNER JOIN aircraft USING(aircraft_id)
-    INNER JOIN (
-        SELECT ticket.flight_id, COUNT(*)::int tickets
-        FROM ticket
-        GROUP BY flight_id
-    ) AS cte USING(flight_id);
+        SELECT lot.lot_id,
+               samolot.miejsca,
+               samolot.miejsca - bilety,
+               ROUND(bilety::decimal / samolot.miejsca * 100, 3),
+               ROUND((samolot.miejsca - bilety)::decimal / samolot.miejsca * 100, 3)
+        FROM lot
+        INNER JOIN samolot USING (samolot_id)
+        INNER JOIN (
+            SELECT bilet.lot_id, COUNT(*)::int bilety
+            FROM bilet
+            GROUP BY lot_id
+        ) AS cte USING (lot_id);
 END $$ LANGUAGE plpgsql;
 
-SELECT * FROM FreeSeatsPerFlight()
+SELECT * FROM WolneMiejscaKazdegoLotu()
