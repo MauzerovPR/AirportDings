@@ -1,3 +1,8 @@
+/**
+  Zwraca ilosc lotów bezpośrednich
+  (lotów które nie kontynuują lotu do następnego lotniska,
+   ani żaden inny lot nie kontynuuje swojego lotu, tym lotem)
+**/
 CREATE OR REPLACE FUNCTION IloscLotowBezposrednich()
     RETURNS INTEGER
     AS $$ BEGIN

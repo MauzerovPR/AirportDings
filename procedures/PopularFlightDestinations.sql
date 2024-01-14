@@ -1,3 +1,7 @@
+/**
+  Zwraca nazwy lotnisk, do których sprzedano najwiecej biletów,
+  oraz wykonano najwięcej lotów.
+**/
 CREATE OR REPLACE FUNCTION NajpopularniejszeMiejscaDocelowe()
     RETURNS TABLE (
         lotnisko     VARCHAR(255),

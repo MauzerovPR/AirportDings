@@ -3,6 +3,9 @@ CREATE OR REPLACE FUNCTION KwartalRoku(d TIMESTAMP)
     RETURN (extract(year from d)::text || '.Q' || extract(quarter from d)::text);
 END $$ LANGUAGE plpgsql;
 
+/**
+  Zwraca sumę kosztów sprzedanych biletów, dla każdego lotu.
+**/
 CREATE OR REPLACE FUNCTION IleZarobilKazdyLot()
     RETURNS TABLE (
         id      BIGINT,
@@ -17,6 +20,9 @@ CREATE OR REPLACE FUNCTION IleZarobilKazdyLot()
         ORDER BY bilet.lot_id;
 END $$ LANGUAGE plpgsql;
 
+/**
+  Zwraca sumę kosztów sprzedanych biletów, dla każdego samolotu.
+**/
 CREATE OR REPLACE FUNCTION IleZarobilKazdySamolot()
     RETURNS TABLE (
         id      BIGINT,
@@ -31,6 +37,12 @@ CREATE OR REPLACE FUNCTION IleZarobilKazdySamolot()
         ORDER BY lot.samolot_id;
 END $$ LANGUAGE plpgsql;
 
+/**
+  Zwraca sumę kosztów sprzedanych biletów, dla każdego lotniska.
+    - z_pochodzeniem: zalicza odloty do zarobków
+    - z_kierunkiem: zalicza przyloty do zarobków
+    -- pozwala to na wybranie, czy lotnisko zarabia podczas odlotu, przylotu lub obu
+**/
 CREATE OR REPLACE FUNCTION IleZarobiloKazdeLotnisko(z_pochodzeniem BOOLEAN default True, z_kierunkiem BOOLEAN default True)
     RETURNS TABLE (
         id      BIGINT,
