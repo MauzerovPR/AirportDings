@@ -1,21 +1,22 @@
-DROP FUNCTION IF EXISTS PopularFlightDestinations();
-
-CREATE OR REPLACE FUNCTION PopularFlightDestinations()
-RETURNS TABLE (
-    airport VARCHAR(255),
-    tickets_sold BIGINT,
-    flights_done BIGINT
-) AS $$ BEGIN
+/**
+  Zwraca nazwy lotnisk, do których sprzedano najwiecej biletów,
+  oraz wykonano najwięcej lotów.
+**/
+CREATE OR REPLACE FUNCTION NajpopularniejszeMiejscaDocelowe()
+    RETURNS TABLE (
+        lotnisko     VARCHAR(255),
+        sprzedane_bilety BIGINT,
+        wykonane_loty    BIGINT
+    ) AS $$ BEGIN
     RETURN QUERY
-    SELECT
-        airport.name,
-        COUNT(*) tickets_sold,
-        COUNT(DISTINCT flight_id) flights_done
-    FROM flight
-    INNER JOIN airport ON destination = airport.airport_id
-    INNER JOIN ticket USING (flight_id)
-    GROUP BY airport.name
-    ORDER BY flights_done DESC, tickets_sold DESC;
+        SELECT lotnisko.nazwa,
+               COUNT(*)               sprzedane_bilety,
+               COUNT(DISTINCT lot_id) wykonane_loty
+        FROM lot
+        INNER JOIN lotnisko ON kierunek = lotnisko.lotnisko_id
+        INNER JOIN bilet USING (lot_id)
+        GROUP BY lotnisko.nazwa
+        ORDER BY wykonane_loty DESC, sprzedane_bilety DESC;
 END $$ LANGUAGE plpgsql;
 
-SELECT * FROM PopularFlightDestinations();
+SELECT * FROM NajpopularniejszeMiejscaDocelowe();
