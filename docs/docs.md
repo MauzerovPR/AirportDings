@@ -59,8 +59,9 @@ Odzwierciedla pojedyncze loty realizowane między lotniskami.
 
 Informacje na temat pasażerów korzystających z usług linii.
 
-- **pasazer_id** : Numer identyfikacyjny pasażera
-- **imie**, nazwisko : Dane personalne pasażera
+- **pasazer_id**: Numer identyfikacyjny pasażera
+- **imie**: imie pasażera
+- **nazwisko**: nazwisko pasażera
 
 ### Tabela `bilet`
 
