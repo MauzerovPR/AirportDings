@@ -1,3 +1,20 @@
+/**
+ * @brief Funkcja zwraca loty wylatujące w ciągu określonego czasu.
+ *
+ * Funkcja zwraca listę lotów wylatujących w ciągu zadanego czasu. 
+ * Możliwe jest filtrowanie wyników, aby zwrócić tylko te loty, 
+ * dla których pozostały jeszcze wolne miejsca na pokładzie.
+ *
+ * @param czas      Czas w jakim chcemy wyszukać loty wylatujące, 
+ *                  domyślnie ustawione na 0 minut.
+ * @param czy_pelne Parametr określający, czy zwrócone loty mogą 
+ *                  być pełne, czy też należy zwrócić tylko te, 
+ *                  dla których są jeszcze dostępne miejsca.
+ *                  Domyślnie ustawione na False.
+ *
+ * @return Zestaw danych zawierających informacje o lotach wylatujących 
+ *         w zadanym czasie.
+ */
 CREATE OR REPLACE FUNCTION LotyWylatujaceZa(czas INTERVAL DEFAULT Interval '0 minutes', czy_pelne BOOL DEFAULT False)
 RETURNS SETOF lot AS $$ BEGIN
 	RETURN QUERY

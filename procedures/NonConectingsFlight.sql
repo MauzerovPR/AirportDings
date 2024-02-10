@@ -1,8 +1,10 @@
 /**
-  Zwraca ilosc lotów bezpośrednich
-  (lotów które nie kontynuują lotu do następnego lotniska,
-   ani żaden inny lot nie kontynuuje swojego lotu, tym lotem)
-**/
+ * @brief Funkcja zwraca liczbę lotów bezpośrednich.
+ *
+ * Funkcja zwraca liczbę lotów, które nie mają żadnego poprzedniego ani następnego lotu, co oznacza, że są lotami bezpośrednimi.
+ *
+ * @return Liczba lotów bezpośrednich.
+ */
 CREATE OR REPLACE FUNCTION IloscLotowBezposrednich()
     RETURNS INTEGER
     AS $$ BEGIN

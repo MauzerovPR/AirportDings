@@ -1,11 +1,24 @@
+/**
+ * @brief Funkcja zwraca kwartał roku na podstawie podanej daty.
+ *
+ * Funkcja zwraca kwartał roku na podstawie daty podanej jako argument.
+ *
+ * @param d Data, dla której ma zostać określony kwartał roku.
+ * @return Tekstowa reprezentacja kwartału roku w formacie "RRRR.Q", gdzie RRRR to rok, a Q to numer kwartału.
+ */
 CREATE OR REPLACE FUNCTION KwartalRoku(d TIMESTAMP)
     RETURNS TEXT AS $$ BEGIN
     RETURN (extract(year from d)::text || '.Q' || extract(quarter from d)::text);
 END $$ LANGUAGE plpgsql;
 
 /**
-  Zwraca sumę kosztów sprzedanych biletów, dla każdego lotu.
-**/
+ * @brief Funkcja zwraca informacje o zarobkach dla każdego lotu.
+ *
+ * Funkcja zwraca zestaw danych zawierających identyfikator lotu, 
+ * łączny zarobek ze sprzedaży biletów oraz kwartał, w którym odbył się lot.
+ *
+ * @return Zestaw danych zawierający informacje o zarobkach dla każdego lotu.
+ */
 CREATE OR REPLACE FUNCTION IleZarobilKazdyLot()
     RETURNS TABLE (
         id      BIGINT,
@@ -21,8 +34,13 @@ CREATE OR REPLACE FUNCTION IleZarobilKazdyLot()
 END $$ LANGUAGE plpgsql;
 
 /**
-  Zwraca sumę kosztów sprzedanych biletów, dla każdego samolotu.
-**/
+ * @brief Funkcja zwraca informacje o zarobkach dla każdego samolotu.
+ *
+ * Funkcja zwraca zestaw danych zawierających identyfikator samolotu, 
+ * łączny zarobek ze sprzedaży biletów oraz kwartał, w którym odbyły się loty obsługiwane przez ten samolot.
+ *
+ * @return Zestaw danych zawierający informacje o zarobkach dla każdego samolotu.
+ */
 CREATE OR REPLACE FUNCTION IleZarobilKazdySamolot()
     RETURNS TABLE (
         id      BIGINT,
@@ -38,11 +56,15 @@ CREATE OR REPLACE FUNCTION IleZarobilKazdySamolot()
 END $$ LANGUAGE plpgsql;
 
 /**
-  Zwraca sumę kosztów sprzedanych biletów, dla każdego lotniska.
-    - z_pochodzeniem: zalicza odloty do zarobków
-    - z_kierunkiem: zalicza przyloty do zarobków
-    -- pozwala to na wybranie, czy lotnisko zarabia podczas odlotu, przylotu lub obu
-**/
+ * @brief Funkcja zwraca informacje o zarobkach dla każdego lotniska.
+ *
+ * Funkcja zwraca zestaw danych zawierających nazwę lotniska, 
+ * łączny zarobek ze sprzedaży biletów oraz kwartał, w którym odbyły się loty z i do tego lotniska.
+ *
+ * @param z_pochodzeniem Określa, czy uwzględniać loty wychodzące z danego lotniska. Domyślnie True.
+ * @param z_kierunkiem Określa, czy uwzględniać loty kierujące się do danego lotniska. Domyślnie True.
+ * @return Zestaw danych zawierający informacje o zarobkach dla każdego lotniska.
+ */
 CREATE OR REPLACE FUNCTION IleZarobiloKazdeLotnisko(z_pochodzeniem BOOLEAN default True, z_kierunkiem BOOLEAN default True)
     RETURNS TABLE (
         id      BIGINT,

@@ -1,11 +1,12 @@
 /**
-  Zwraca:
-    - ilość miejsc w samolocie
-    - ilość wolnych miejsc w samolocie
-    - ilość sprzedanyc biletów (zajętych miejsc)
-    - procent zapełnienia samolotu
-    - procent wolnych miejsc
-**/
+ * @brief Funkcja zwraca informacje o dostępnych miejscach dla każdego lotu.
+ *
+ * Funkcja zwraca zestaw danych zawierających identyfikator lotu, 
+ * liczbę wszystkich miejsc w samolocie, liczbę wolnych miejsc, 
+ * liczbę zajętych miejsc, procent zajętych miejsc oraz procent wolnych miejsc.
+ *
+ * @return Zestaw danych zawierający informacje o dostępnych miejscach dla każdego lotu.
+ */
 CREATE OR REPLACE FUNCTION WolneMiejscaKazdegoLotu()
     RETURNS TABLE (
         id                      BIGINT,

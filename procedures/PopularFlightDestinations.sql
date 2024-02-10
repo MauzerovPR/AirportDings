@@ -1,7 +1,10 @@
 /**
-  Zwraca nazwy lotnisk, do których sprzedano najwiecej biletów,
-  oraz wykonano najwięcej lotów.
-**/
+ * @brief Funkcja zwraca najpopularniejsze miejsca docelowe na podstawie sprzedanych biletów i wykonanych lotów.
+ *
+ * Funkcja zwraca listę najpopularniejszych miejsc docelowych na podstawie liczby sprzedanych biletów oraz liczby wykonanych lotów.
+ *
+ * @return Zestaw danych zawierających nazwę lotniska docelowego, liczbę sprzedanych biletów i liczbę wykonanych lotów.
+ */
 CREATE OR REPLACE FUNCTION NajpopularniejszeMiejscaDocelowe()
     RETURNS TABLE (
         lotnisko     VARCHAR(255),
