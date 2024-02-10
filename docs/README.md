@@ -50,7 +50,7 @@ Odzwierciedla pojedyncze loty realizowane między lotniskami.
 - **dlugosc_lotu**: Przewidywana długość trwania rejsu
 - **opoznenia**: Ewentualne opóźnenia względem planowanego czasu
 
-Ograniczenia:
+**Ograniczenia**:
 
 - Źródło i cel nie mogą być takie same
 - Pilot i drugi pilot muszą być różnymi osobami
@@ -66,7 +66,7 @@ Informacje na temat pasażerów korzystających z usług linii.
 
 Dane odnośnie zakupionych biletów na określone rejsy.
 
-- **lot_ID**, pasazer_Id: Klucze obce połączone relacją jeden-do-wielu
+- **lot_ID**, **pasazer_Id**: Klucze obce połączone relacją jeden-do-wielu
   odpowiednio z tabelą LOT oraz Pasazer, te pola tworzą razem klucz głowney
 - **cena** : Cena biletu musi byc nieujemna
 - **miejsce**: Numer miejsca przypisanego pasażerowi na pokładzie
