@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS lot
     drugi_pilot_id BIGINT    NOT NULL,
     data_odlotu    timestamp NOT NULL DEFAULT current_timestamp,
     dlugosc_lotu   interval  NOT NULL,
-    opuznienia     interval  NOT NULL DEFAULT '0 minutes',
+    opoznienia     interval  NOT NULL DEFAULT '0 minutes',
     FOREIGN KEY (pochodzenie) REFERENCES lotnisko (lotnisko_id),
     FOREIGN KEY (kierunek) REFERENCES lotnisko (lotnisko_id),
     FOREIGN KEY (nastepny_lot) REFERENCES lot (lot_id),
@@ -63,3 +63,4 @@ CREATE TABLE IF NOT EXISTS bilet
     FOREIGN KEY (lot_id) REFERENCES lot (lot_id),
     FOREIGN KEY (pasazer_id) REFERENCES pasazer (pasazer_id)
 );
+
