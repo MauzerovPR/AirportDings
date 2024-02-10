@@ -60,6 +60,6 @@ CREATE TABLE IF NOT EXISTS bilet
     klasa       int            NOT NULL,
     data_zakupu timestamp      NOT NULL DEFAULT current_timestamp,
     PRIMARY KEY (lot_id, pasazer_id),
-    FOREIGN KEY (lot_id) REFERENCES lot (lot_id)
+    FOREIGN KEY (lot_id) REFERENCES lot (lot_id),
     FOREIGN KEY (pasazer_id) REFERENCES pasazer (pasazer_id)
 );
