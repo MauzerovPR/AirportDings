@@ -3,66 +3,63 @@ CREATE SCHEMA public;
 
 CREATE TABLE IF NOT EXISTS lotnisko
 (
-    lotnisko_id bigint primary key generated always as identity,
-    nazwa       varchar(255) not null,
-    czynny      bool         not null default false
+    lotnisko_id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    nazwa       VARCHAR(255) NOT NULL,
+    czynny      BOOL         NOT NULL DEFAULT false
 );
 
 CREATE TABLE IF NOT EXISTS samolot
 (
-    samolot_id bigint primary key generated always as identity,
-    model      varchar(255),
-    miejsca    int not null check ( miejsca > 0 )
+    samolot_id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    model      VARCHAR(255),
+    miejsca    INT NOT NULL CHECK ( miejsca > 0 )
 );
 
 CREATE TABLE IF NOT EXISTS pilot
 (
-    pilot_id bigint primary key generated always as identity,
-    imie     varchar(255) not null,
-    nazwisko varchar(255)
+    pilot_id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    imie     VARCHAR(255) NOT NULL,
+    nazwisko VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS lot
 (
-    lot_id         bigint primary key generated always as identity,
-    pochodzenie    bigint    not null,
-    kierunek       bigint    not null,
-    nastepny_lot   bigint    null     default null,
-    samolot_id     bigint    not null,
-    pilot_id       bigint    not null,
-    drugi_pilot_id bigint    not null,
-    data_odlotu    timestamp not null default current_timestamp,
-    dlugosc_lotu   interval  not null,
-    opuznienia     interval  not null default '0 minutes',
-    foreign key (pochodzenie) references lotnisko (lotnisko_id),
-    foreign key (kierunek) references lotnisko (lotnisko_id),
-    foreign key (nastepny_lot) references lot (lot_id),
-    foreign key (pilot_id) references Pilot (pilot_id),
-    foreign key (drugi_pilot_id) references Pilot (pilot_id),
-    foreign key (samolot_id) references samolot (samolot_id),
-    check ( pochodzenie <> kierunek ),
-    check ( drugi_pilot_id <> pilot_id )
+    lot_id         BIGINT    PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    pochodzenie    BIGINT    NOT NULL,
+    kierunek       BIGINT    NOT NULL,
+    nastepny_lot   BIGINT    NULL     DEFAULT NULL,
+    samolot_id     BIGINT    NOT NULL,
+    pilot_id       BIGINT    NOT NULL,
+    drugi_pilot_id BIGINT    NOT NULL,
+    data_odlotu    timestamp NOT NULL DEFAULT current_timestamp,
+    dlugosc_lotu   interval  NOT NULL,
+    opuznienia     interval  NOT NULL DEFAULT '0 minutes',
+    FOREIGN KEY (pochodzenie) REFERENCES lotnisko (lotnisko_id),
+    FOREIGN KEY (kierunek) REFERENCES lotnisko (lotnisko_id),
+    FOREIGN KEY (nastepny_lot) REFERENCES lot (lot_id),
+    FOREIGN KEY (pilot_id) REFERENCES Pilot (pilot_id),
+    FOREIGN KEY (drugi_pilot_id) REFERENCES Pilot (pilot_id),
+    FOREIGN KEY (samolot_id) REFERENCES samolot (samolot_id),
+    CHECK ( pochodzenie <> kierunek ),
+    CHECK ( drugi_pilot_id <> pilot_id )
 );
 
 CREATE TABLE IF NOT EXISTS pasazer
 (
-    pasazer_id bigint primary key generated always as identity,
-    imie       varchar(255) not null,
-    nazwisko   varchar(255)
+    pasazer_id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    imie       VARCHAR(255) NOT NULL,
+    nazwisko   VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS bilet
 (
-    lot_id      bigint         not null,
-    pasazer_id  bigint         not null,
-    cena        decimal(20, 2) not null default 0 check ( cena >= 0 ),
-    miejce      varchar(4)     not null,
-    klasa       int            not null,
-    data_zakupu timestamp      not null default current_timestamp,
-    primary key (lot_id, pasazer_id),
-    foreign key (lot_id) references lot (lot_id),
-    foreign key (pasazer_id) references pasazer (pasazer_id)
+    lot_id      BIGINT         NOT NULL,
+    pasazer_id  BIGINT         NOT NULL,
+    cena        decimal(20, 2) NOT NULL DEFAULT 0 CHECK ( cena >= 0 ),
+    miejce      VARCHAR(4)     NOT NULL,
+    klasa       int            NOT NULL,
+    data_zakupu timestamp      NOT NULL DEFAULT current_timestamp,
+    PRIMARY KEY (lot_id, pasazer_id),
+    FOREIGN KEY ()
+    FOREIGN KEY (pasazer_id) REFERENCES pasazer (pasazer_id)
 );
-
--- Procedures
-
