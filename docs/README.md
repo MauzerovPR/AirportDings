@@ -9,7 +9,7 @@ Baza danych przechowuje informacje o lotniskach, samolotach, pilotach, lotach,
 pasażerach i biletach. Poniżej przedstawiono szczegółowy opis tabel w schemacie
 `public`.
 
-![Database diagram](../screenshots/aircraft_whitest.png)
+![Database diagram](erd.png)
 
 ### Tabela `lotnisko`
 
