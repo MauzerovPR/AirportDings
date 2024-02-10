@@ -44,13 +44,13 @@ Odzwierciedla pojedyncze loty realizowane między lotniskami.
 - **kierunek**: Lotnisko docelowe.
 - **nastepny_lot**: Opcjonalne powiązanie z kolejnym planowanym lotem.
 - **samolot_id**: Przypisanie samolotu do danego lotu.
-- **pilot_id** &amp; **drugi_pilot_id**: Identyfikatory przypisanych pilotów
+- **pilot_id &amp; drugi_pilot_id**: Identyfikatory przypisanych pilotów
   pierwszego i drugiego oficera. Nie mogą być tacy sami dla jednego rejsu
 - **data_odlotu**: Planowana data oraz godzina odlotu
 - **dlugosc_lotu**: Przewidywana długość trwania rejsu
-- **opoznenia**: Ewentualne opóźnenia względem planowanego czasu
+- **opoznienia**: Ewentualne opóźnenia względem planowanego czasu
 
-**Ograniczenia**:
+**Ograniczenia**
 
 - Źródło i cel nie mogą być takie same
 - Pilot i drugi pilot muszą być różnymi osobami
@@ -66,12 +66,12 @@ Informacje na temat pasażerów korzystających z usług linii.
 
 Dane odnośnie zakupionych biletów na określone rejsy.
 
-- **lot_ID**, **pasazer_Id**: Klucze obce połączone relacją jeden-do-wielu
+- **lot_ID &amp; pasazer_Id**: Klucze obce połączone relacją jeden-do-wielu
   odpowiednio z tabelą LOT oraz Pasazer, te pola tworzą razem klucz głowney
 - **cena** : Cena biletu musi byc nieujemna
 - **miejsce**: Numer miejsca przypisanego pasażerowi na pokładzie
 - **klasa** : Klasa ekonomiczna/biznes/first class itd.
-- **data_zakupujący**: Timestamp zawierający datę oraz godzinę zakupienia
+- **data_zakupu**: Timestamp zawierający datę oraz godzinę zakupienia
   biletuParametry są ustawione tak aby dokumentować transakcję automatycznie
 
 Kontrola spójności danych jest zapewniona przez ograniczenia klucza obcego
