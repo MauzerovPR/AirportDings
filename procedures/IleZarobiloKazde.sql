@@ -11,6 +11,7 @@ CREATE OR REPLACE FUNCTION KwartalRoku(d TIMESTAMP)
     RETURN (extract(year from d)::text || '.Q' || extract(quarter from d)::text);
 END $$ LANGUAGE plpgsql;
 
+
 /**
  * @brief Funkcja zwraca informacje o zarobkach dla każdego lotu.
  *
@@ -33,6 +34,7 @@ CREATE OR REPLACE FUNCTION IleZarobilKazdyLot()
         ORDER BY bilet.lot_id;
 END $$ LANGUAGE plpgsql;
 
+
 /**
  * @brief Funkcja zwraca informacje o zarobkach dla każdego samolotu.
  *
@@ -54,6 +56,7 @@ CREATE OR REPLACE FUNCTION IleZarobilKazdySamolot()
         GROUP BY lot.samolot_id, kwartal
         ORDER BY lot.samolot_id;
 END $$ LANGUAGE plpgsql;
+
 
 /**
  * @brief Funkcja zwraca informacje o zarobkach dla każdego lotniska.
@@ -86,6 +89,7 @@ CREATE OR REPLACE FUNCTION IleZarobiloKazdeLotnisko(z_pochodzeniem BOOLEAN defau
         GROUP BY lotnisko, kwartal
         ORDER BY lotnisko;
 END $$ LANGUAGE plpgsql;
+
 
 SELECT * FROM IleZarobilKazdyLot();
 SELECT * FROM IleZarobilKazdySamolot();

@@ -2,7 +2,7 @@
  * @brief Funkcja zwraca wszystkie przystanki dla danego lotu.
  *
  * Funkcja zwraca zestaw danych zawierający kolejne przystanki dla danego lotu na podstawie jego identyfikatora.
- *
+ 
  * @param id Identyfikator lotu, dla którego mają zostać zwrócone przystanki.
  * @return Zestaw danych zawierający kolejne przystanki dla danego lotu.
  */
