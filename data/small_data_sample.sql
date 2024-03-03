@@ -32,6 +32,30 @@ VALUES (1, 2, 2, 1, 1, 2, INTERVAL '2 hours'),
 
 INSERT INTO bilet(lot_id, pasazer_id, cena, miejce, klasa)
 VALUES (1, 1, 10, 'abcd', 1),
+       (1, 2, 10, 'abed', 1),
        (2, 1, 10, '235', 1),
        (3, 1, 20, '5435', 2),
        (6, 2, 200, '5acc', 2);
+
+-- Trigger OgraniczIloscPasazerow test:
+DO $$
+DECLARE i INT;
+BEGIN
+    FOR i IN 1..398 LOOP
+        INSERT INTO pasazer(imie, nazwisko) VALUES (i::text, i::text);
+        COMMIT;
+        INSERT INTO bilet(lot_id, pasazer_id, cena, miejce, klasa)
+            VALUES (1, i + 2, (1.5 * i)::int, LEFT((1234 * i)::text, 4), 2);
+        COMMIT;
+    END LOOP;
+END $$;
+
+-- Trigger UnikajCyklicznychLotów test:
+INSERT INTO lot(pochodzenie, kierunek, nastepny_lot, samolot_id, pilot_id, drugi_pilot_id, dlugosc_lotu)
+VALUES (1, 2, 9, 1, 1, 2, INTERVAL '1 hour'), -- 8
+       (1, 2, 10, 1, 1, 2, INTERVAL '1 hour'), -- 9
+       (1, 2, 8, 1, 1, 2, INTERVAL '1 hour'); -- 10
+-- also works with UPDATE. change above to NULL for proper test
+UPDATE lot SET nastepny_lot = 9 WHERE lot_id = 8;
+UPDATE lot SET nastepny_lot = 10 WHERE lot_id = 9;
+UPDATE lot SET nastepny_lot = 8 WHERE lot_id = 10;

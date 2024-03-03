@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS lot
     lot_id         BIGINT    PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     pochodzenie    BIGINT    NOT NULL,
     kierunek       BIGINT    NOT NULL,
-    nastepny_lot   BIGINT    NULL     DEFAULT NULL,
+    nastepny_lot   BIGINT    NULL     DEFAULT NULL UNIQUE,
     samolot_id     BIGINT    NOT NULL,
     pilot_id       BIGINT    NOT NULL,
     drugi_pilot_id BIGINT    NOT NULL,
@@ -300,3 +300,93 @@ RETURNS SETOF lot AS $$ BEGIN
 	  );
 END $$ LANGUAGE plpgsql;
 
+
+/**
+ * @brief Funkcja wykorzystywana w wyzwalaczu, chroni przed przepełnieniem samolotu
+ *
+ * Funkcja sprawdza czy jest miejsce w samolocie aby zarezerować bilet na dany lot
+ * Gdy nie ma miejsce funckja zwraca bład i nie dodaje rekordu, natomiast gdy jest
+ * miejsce dodanie nowego rekordu wykonywane jest bez zmian
+ *
+ * @return Nowy rekord tabeli bilet, lub bład
+ */
+CREATE OR REPLACE FUNCTION OgraniczIloscPasazerow()
+RETURNS TRIGGER AS $$ BEGIN
+    DECLARE
+        ilosc INT;
+        pojemnosc INT;
+    BEGIN
+        SELECT COUNT(*), samolot.miejsca INTO ilosc, pojemnosc FROM bilet
+            INNER JOIN lot USING (lot_id)
+            INNER JOIN samolot USING (samolot_id)
+            WHERE lot_id = NEW.lot_id
+            GROUP BY samolot.miejsca;
+        IF ilosc >= pojemnosc THEN
+            RAISE EXCEPTION 'Brak wolnych miejsc na lot id %', NEW.lot_id;
+        END IF;
+        RETURN NEW;
+    END;
+END $$ LANGUAGE plpgsql;
+
+/**
+ * @brief Wyzwalacz chroni przed przepełnieniem samolotu
+ *
+ * Wywołuje funkcje OgraniczIloscPasazerow, która zajmuje się
+ * sprawdzeniem czy jest wolne miejsce w samolocie.
+ */
+CREATE OR REPLACE TRIGGER OgraniczIloscPasazerow
+    BEFORE INSERT OR UPDATE ON bilet
+    FOR EACH ROW EXECUTE FUNCTION OgraniczIloscPasazerow();
+
+
+/**
+ * @brief Funkcja wykorzystywana w wyzwalaczu, chroni przed lotami cyklicznymi
+ *
+ * Funkcja sprawdza czy lot nie zostanie zapętlony przy dodaniu nowege lotu poprzez:
+ *  1. 'COUNT(*) > 1' :: aby lot był zapętlony musi mieć więcej niż jeden nastepny lot
+ *                   brak tego warunku nie pozwala na dodanie żadnego lotu bez kontynuacji
+ *  2. 'cte.nastepny_lot <> NEW.lot_id' :: w momencie gdy lot się nie zapętla ten warunek
+ *                   powoduje dodanie NULL do wyniku kwerendy rekurencyjnej, natomiast nie
+ *                   dodanie nic gdy się zapętla
+ *  3. 'cte.nastepny_lot IS NULL AS kontynuuje' oraz 'MAX(kontynuuje::int) = 0' :: pozwala na
+ *                   poprawną detekcję czy lot jest cykliczny.
+ *                   - 'cte.nastepny_lot IS NULL' - zamienia id następnych lotów na TRUE/FALSE
+ *                                      w zależności czy istnieje (gdy nie istnieje -> TRUE)
+ *                   - 'MAX(kontynuuje::int) = 0' - sprawdza czy wszystkie loty mają następny lot,
+ *                              następnie wyfiltrowuje z wyniku te które nie mają następnego lotu
+ *  4. 'EXISTS (SELECT 1 FROM ...' :: EXISTS sprawdza czy kwerenda zwraca niepusty wynik, czyli:
+ *                   gdy lot nie ma następnego lotu punkt 1. spowoduje że kwerenda w EXISTS zwróci
+ *                   pusty wynik, gdy lot jest cykliczny spowoduje brak NULL w wyniku przez 2.
+ *                   co spowoduje żę 3. 'MAX(kontynuuje::int) = 0' będzie równe 0, co zwróci
+ *                   jedną jedynke do wyniku w EXISTS, zwracająć TRUE dla głownego warunku.
+ *
+ * @return Nowy rekord tabeli lot, lub bład
+ */
+CREATE OR REPLACE FUNCTION UnikajCyklicznychLotów()
+RETURNS TRIGGER AS $$ BEGIN
+    IF EXISTS (SELECT 1 FROM (
+        WITH RECURSIVE cte AS (
+            SELECT lot.nastepny_lot FROM lot
+            WHERE lot.lot_id = NEW.nastepny_lot
+            UNION
+            SELECT lot.nastepny_lot FROM lot
+            INNER JOIN cte ON cte.nastepny_lot = lot.lot_id AND cte.nastepny_lot <> NEW.lot_id
+        )
+        SELECT cte.nastepny_lot IS NULL AS kontynuuje FROM cte
+    ) AS tmp HAVING COUNT(*) > 1 AND MAX(kontynuuje::int) = 0) THEN
+        RAISE EXCEPTION 'Wykryto cykliczny lot dla identyfikatora lotu %', NEW.lot_id;
+    END IF;
+    RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+/**
+ * @brief Wyzwalacz chroni przed lotami cyklicznymi
+ *
+ * Wywołuje funkcje UnikajCyklicznychLotów, która zajmuje się
+ * sprawdzeniem czy nowy lot nie spowoduje pętli lotów.
+ */
+CREATE OR REPLACE TRIGGER UnikajCyklicznychLotów
+    BEFORE INSERT OR UPDATE ON lot
+    FOR EACH ROW
+    WHEN ( NEW.nastepny_lot IS NOT NULL )
+    EXECUTE FUNCTION UnikajCyklicznychLotów();
