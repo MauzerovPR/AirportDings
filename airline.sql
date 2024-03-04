@@ -342,23 +342,18 @@ CREATE OR REPLACE TRIGGER OgraniczIloscPasazerow
 /**
  * @brief Funkcja wykorzystywana w wyzwalaczu, chroni przed lotami cyklicznymi
  *
- * Funkcja sprawdza czy lot nie zostanie zapętlony przy dodaniu nowege lotu poprzez:
- *  1. 'COUNT(*) > 1' :: aby lot był zapętlony musi mieć więcej niż jeden nastepny lot
- *                   brak tego warunku nie pozwala na dodanie żadnego lotu bez kontynuacji
- *  2. 'cte.nastepny_lot <> NEW.lot_id' :: w momencie gdy lot się nie zapętla ten warunek
- *                   powoduje dodanie NULL do wyniku kwerendy rekurencyjnej, natomiast nie
- *                   dodanie nic gdy się zapętla
- *  3. 'cte.nastepny_lot IS NULL AS kontynuuje' oraz 'MAX(kontynuuje::int) = 0' :: pozwala na
- *                   poprawną detekcję czy lot jest cykliczny.
- *                   - 'cte.nastepny_lot IS NULL' - zamienia id następnych lotów na TRUE/FALSE
- *                                      w zależności czy istnieje (gdy nie istnieje -> TRUE)
- *                   - 'MAX(kontynuuje::int) = 0' - sprawdza czy wszystkie loty mają następny lot,
- *                              następnie wyfiltrowuje z wyniku te które nie mają następnego lotu
- *  4. 'EXISTS (SELECT 1 FROM ...' :: EXISTS sprawdza czy kwerenda zwraca niepusty wynik, czyli:
- *                   gdy lot nie ma następnego lotu punkt 1. spowoduje że kwerenda w EXISTS zwróci
- *                   pusty wynik, gdy lot jest cykliczny spowoduje brak NULL w wyniku przez 2.
- *                   co spowoduje żę 3. 'MAX(kontynuuje::int) = 0' będzie równe 0, co zwróci
- *                   jedną jedynke do wyniku w EXISTS, zwracająć TRUE dla głownego warunku.
+ * Funkcja sprawdza czy lot nie zostanie zapętlony przy dodaniu nowege lotu poprzez
+ * rekurencyjne znalezienie wszystkich kolejenych lotów zaczynając od 'następnego lotu'
+ * nowo dodanego lotu dodając do wyniku ich id, gdy rekurencyjna kwerenda znajdzie lot,
+ * który już był w wyniku onznacza to, że znajduje się pętla lotów następuje zakończenie
+ * rekurencyjnej kwerendy, pozwala nam na to klauzula UNION oraz jak działa rekurencja w SQL:
+ *  - UNION - łączy dwa lub więcej wyników w jeden bez powtórzeń
+ *  - RECURSIVE - wykonuje zapytania rekurencyjne tylko dla nowych wyników
+ *    (przez to że nie ma duplikatów, pętla lotów nie jest traktowana jako nowy wynik)
+ * następnie sprawdzamy czy zakończenie rekurencji jest spowodowane pętlą, poprzez
+ * wyszukanie czy id dowolnego następnego lotu jest równe nowo dodanemu:
+ *                   'WHERE cte.nastepny_lot = NEW.lot_id'
+ * oraz klauzulą EXISTS sprawdzającą czy kwerenda zwraca nie pusty wynik
  *
  * @return Nowy rekord tabeli lot, lub bład
  */
