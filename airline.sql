@@ -364,16 +364,16 @@ CREATE OR REPLACE TRIGGER OgraniczIloscPasazerow
  */
 CREATE OR REPLACE FUNCTION UnikajCyklicznychLotów()
 RETURNS TRIGGER AS $$ BEGIN
-    IF EXISTS (SELECT 1 FROM (
+    IF EXISTS (
         WITH RECURSIVE cte AS (
             SELECT lot.nastepny_lot FROM lot
             WHERE lot.lot_id = NEW.nastepny_lot
             UNION
             SELECT lot.nastepny_lot FROM lot
-            INNER JOIN cte ON cte.nastepny_lot = lot.lot_id AND cte.nastepny_lot <> NEW.lot_id
+            INNER JOIN cte ON cte.nastepny_lot = lot.lot_id
         )
-        SELECT cte.nastepny_lot IS NULL AS kontynuuje FROM cte
-    ) AS tmp HAVING COUNT(*) > 1 AND MAX(kontynuuje::int) = 0) THEN
+        SELECT * FROM cte WHERE cte.nastepny_lot = NEW.lot_id
+    ) THEN
         RAISE EXCEPTION 'Wykryto cykliczny lot dla identyfikatora lotu %', NEW.lot_id;
     END IF;
     RETURN NEW;
